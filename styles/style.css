@@ -1,0 +1,83 @@
+body {
+  background: #fff;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+.page-header {
+  padding: 30px 0;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.form-input {
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.marks-form {
+  margin-top: 30px;
+}
+
+.save-btn {
+  background: #f0f0f0;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #222;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.result-card {
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(19,20,22,0.06);
+  margin-top: 30px;
+  padding: 18px;
+  background: #fff;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: #f2b88a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #2b2b2b;
+  font-size: 18px;
+  margin-left: 12px;
+}
+
+.marks-row {
+  background: #f7f7f7;
+  border-radius: 10px;
+  padding: 18px;
+  margin-top: 12px;
+}
+
+.marks-row h6 {
+  font-weight: 700;
+}
+
+.small-muted {
+  color: #8a8a8a;
+  font-size: 14px;
+}
+
+.close-x {
+  color: #ff4d4d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .page-header {
+    text-align: center;
+  }
+  .avatar {
+    margin-left: 8px;
+    margin-bottom: 12px;
+  }
+}
