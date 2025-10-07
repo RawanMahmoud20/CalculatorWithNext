@@ -65,7 +65,6 @@ console.log(response.data); // رسالة النجاح
 if (!exists) {
   dispatch(studentAction.addStudent(student));
 }
-dispatch(studentAction.addStudent(student)); // إضافة للـ Redux
 clear();
 router.push("/result");
 // const exists = students.some((s) => s.id === student.id);
