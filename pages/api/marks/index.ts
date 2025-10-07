@@ -14,7 +14,7 @@ export default async function handler(
 ){
     if(req.method == "GET"){
         const client = await MongoClient.connect(
-             "mongodb+srv://rawanmahmoud323_db_user:<rawan2002$$>@cluster0.6ks2vfs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+                    "mongodb+srv://rawanmahmoud323_db_user:oavL5X3pdUJfpzBq@cluster0.6ks2vfs.mongodb.net/?retryWrites=true&w=majority");
     let db= client.db("MarksDB");
     let marksCollection= db.collection("marks");
     let data = await marksCollection.find().toArray();
