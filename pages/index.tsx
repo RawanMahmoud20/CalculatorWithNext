@@ -1,10 +1,11 @@
 import Head from "next/head";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 // import style from  "../styles/style.css"; 
 import { RootState } from "./redux/store";
-import { useDispatch} from "react-redux";
+import { useDispatch, useSelector} from "react-redux";
 import { studentAction } from "./redux/slices/studentsSlice";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const Home: React.FC = () => {
  
@@ -12,6 +13,8 @@ const Home: React.FC = () => {
  let midRef = useRef<HTMLInputElement>(null);
  let finalRef = useRef<HTMLInputElement>(null);
  let activitedRef = useRef<HTMLInputElement>(null);
+ const students = useSelector((state: RootState) => state.students.data);
+
  let dispatch=useDispatch();
  const router= useRouter();
 let cheackData = () => {
@@ -29,7 +32,7 @@ let clear = () => {
   finalRef.current && (finalRef.current.value = "");
   activitedRef.current && (activitedRef.current.value = "");
 }
-let saveData=()=>{
+let saveData=async()=>{
   // save data in redux  ,, نحسب المعدل ونسجله في Redux store., 
 const id = Date.now(); // or use any unique id logic
 const name = nameRef.current?.value || "";
@@ -46,19 +49,43 @@ const student = {
   activites,
   average,
 };
-dispatch(studentAction.addStudent(student));
 
-} 
- let submitHandeller=(event:React.FormEvent)=>{
+try{
+const response= await axios.post('/api/marks/store',{
+  name,
+  mid,
+  final,
+  activites,
+});
+console.log(response.data); // رسالة النجاح
+// الحصول على الطالب الجديد من قاعدة البيانات (مع _id)
+ const studentFromDb = response.data.data || response.data.student;
+ // نتأكد أنه ما انضاف مسبقًا
+  const exists = students.some((s) => s.id === studentFromDb?._id);
+if (!exists) {
+  dispatch(studentAction.addStudent(student));
+}
+dispatch(studentAction.addStudent(student)); // إضافة للـ Redux
+clear();
+router.push("/result");
+// const exists = students.some((s) => s.id === student.id);
+
+}catch (error: any) {
+    console.error("Error:", error.response?.data?.message || error.message);
+    alert(error.response?.data?.message || "Something went wrong!");
+
+}  
+}
+let submitHandeller = (event:React.FormEvent)=>{
  event.preventDefault();
 if (cheackData()){
   saveData();
-  clear();
-  router.push("/result");
+  
+}else {
+    alert("Please fill all fields correctly!");
+  }
 }
 
-
-}
   return (
     <div>
   <Head>

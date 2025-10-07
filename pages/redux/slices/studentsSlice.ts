@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type Student={
-    id:number;
+  _id?: string;
+  id?: number; // إذا أحياناً بتحطي id رقمي
     name:string;
     mid:number;
     final:number;
@@ -25,6 +26,9 @@ reducers:{
     removeStudent: (state, action: PayloadAction<number>) => {
       state.data = state.data.filter((s) => s.id !== action.payload);
     },
+    setStudents: (state, action: PayloadAction<Student[]>) => {
+    state.data = action.payload;
+},
 }
 
 });
