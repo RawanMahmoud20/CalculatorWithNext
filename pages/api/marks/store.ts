@@ -23,7 +23,7 @@ export default async function handler(
                 if (activites >= 0 && activites <= 20) {
                 // to connect with mongodb
                 const client = await MongoClient.connect(
-                    "mongodb://localhost:27017");
+                    "mongodb+srv://rawanmahmoud323_db_user:<rawan2002$$>@cluster0.6ks2vfs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
                 // Every table => collection , row => document
                 // select DB and Collection
                 let db = client.db("MarksDB");
