@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "./redux/store";
-import { studentAction } from "./redux/slices/studentsSlice";
+
 import axios from "axios";
+import { RootState } from "../redux/store";
+import { studentAction } from "../redux/slices/studentsSlice";
 
 const Results: React.FC = () => {
     // fetch data from redux 

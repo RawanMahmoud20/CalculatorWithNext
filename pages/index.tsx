@@ -1,11 +1,11 @@
 import Head from "next/head";
 import React, { useEffect, useRef } from "react";
 // import style from  "../styles/style.css"; 
-import { RootState } from "./redux/store";
 import { useDispatch, useSelector} from "react-redux";
-import { studentAction } from "./redux/slices/studentsSlice";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { RootState } from "../redux/store";
+import { studentAction } from "../redux/slices/studentsSlice";
 
 const Home: React.FC = () => {
  
