@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { RootState } from "../redux/store";
 import { studentAction } from "../redux/slices/studentsSlice";
-
+import { Button } from "antd";
 const Home: React.FC = () => {
  
  let nameRef = useRef<HTMLInputElement>(null);
@@ -75,11 +75,16 @@ router.push("/result");
 
 }  
 }
+const [loading, setLoading] = React.useState<boolean>(false);
 let submitHandeller = (event:React.FormEvent)=>{
  event.preventDefault();
 if (cheackData()){
   saveData();
-  
+    setLoading(true);
+  setTimeout(() => {
+      alert("تم الحفظ!");
+      setLoading(false);
+    }, 2000);
 }else {
     alert("Please fill all fields correctly!");
   }
@@ -166,13 +171,18 @@ if (cheackData()){
 
     <div className="row mt-4">
       <div className="col-12 text-center">
-        <button 
-        type="submit"
+        <Button 
+        iconPosition="end"
+        type="primary"
+
+        variant="outlined"
+        size="large"
          id="saveBtn" 
          className="save-btn"
          onClick={submitHandeller}
+         loading={loading}
          >SAVE
-         </button>
+         </Button>
       </div>
     </div>
   </form>
@@ -186,7 +196,7 @@ if (cheackData()){
     </div>
 
 
-  );
+  )
 }
 
 export default Home;

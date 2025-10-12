@@ -16,8 +16,8 @@ export default async function handler(
     // Ensure id is a string
      const objectId = Array.isArray(id) ? id[0] : id;
 
-    const client = await MongoClient.connect(
-    "mongodb+srv://rawanmahmoud323_db_user:oavL5X3pdUJfpzBq@cluster0.6ks2vfs.mongodb.net/?retryWrites=true&w=majority");
+ const client = await MongoClient.connect(process.env.MONGODB_URI!);
+
     let db= client.db("MarksDB");
     let marksCollection= db.collection("marks");
     // _id from mongodb

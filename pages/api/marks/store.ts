@@ -44,7 +44,7 @@ export default async function handler(
     console.log("Connecting to MongoDB...");
 
     // 4️⃣ الاتصال بـ MongoDB
-    const client = await MongoClient.connect(mongoUri);
+const client = await MongoClient.connect(process.env.MONGODB_URI!);
     const db = client.db("MarksDB");
     const marksCollection = db.collection("marks");
 
