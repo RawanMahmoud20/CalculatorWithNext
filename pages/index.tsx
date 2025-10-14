@@ -17,6 +17,8 @@ const Home: React.FC = () => {
 
  let dispatch=useDispatch();
  const router= useRouter();
+
+ 
 let cheackData = () => {
   return (
     nameRef.current?.value !== "" &&
@@ -68,6 +70,7 @@ if (!exists) {
 clear();
 router.push("/result");
 // const exists = students.some((s) => s.id === student.id);
+
 
 }catch (error: any) {
     console.error("Error:", error.response?.data?.message || error.message);
