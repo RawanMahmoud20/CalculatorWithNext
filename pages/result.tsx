@@ -133,9 +133,10 @@ const [edit,setEdit]=useState(false);
               editable={{
                 editing: edit,
                 onChange: setText,
-                onStart: () => { setText(""); setEdit(true)}, // when click on edit icon
+                onStart: () => setEdit(true), // when click on edit icon
                 onEnd: () => setEdit(false), // when finish editing (press enter or click outside)
               }}
+              onClick={() => { setText(""); setEdit(true); }} // to enable editing on click
               style={{ opacity: 0.5, cursor: "text" }} 
               >
               Can you describe the reason for your low score so that I can take this into account when conducting the final inspection,..................
