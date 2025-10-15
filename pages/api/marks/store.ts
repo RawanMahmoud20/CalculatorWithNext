@@ -27,15 +27,34 @@ export default async function handler(
     if (!name || typeof name !== "string" || name.trim() === "") {
       throw new Error("Name is required and must be a non-empty string");
     }
-    if (typeof mid !== "number" || mid < 0 || mid > 30) {
-      throw new Error("Mid must be a number between 0-30");
-    }
-    if (typeof final !== "number" || final < 0 || final > 50) {
-      throw new Error("Final must be a number between 0-50");
-    }
-    if (typeof activites !== "number" || activites < 0 || activites > 20) {
-      throw new Error("Activities must be a number between 0-20");
-    }
+    // ✅ التحقق من أن الاسم يحتوي فقط على حروف (عربية أو إنجليزية) ومسافات
+    const nameRegex = /^[A-Za-z\u0600-\u06FF\s]+$/;
+    if (!nameRegex.test(name)) {
+      throw new Error("Name must contain only letters (no numbers or symbols)");
+    } 
+  //  دالة عامة للتحقق من القيم الرقمية
+    const validateNumber = (value: any, min: number, max: number, fieldName: string) => {
+      // تأكد أن القيمة رقم حقيقي (وليس نص)
+      if (typeof value !== "number" || isNaN(value)) {
+        throw new Error(`${fieldName} must be a valid number`);
+      }
+
+      // تأكد أن القيمة تحتوي على 3 خانات كحد أقصى
+      if (value.toString().length > 3) {
+        throw new Error(`${fieldName} must not exceed 3 digits`);
+      }
+
+      // تأكد أن القيمة ضمن المدى المطلوب
+      if (value < min || value > max) {
+        throw new Error(`${fieldName} must be between ${min} and ${max}`);
+      }
+    };
+
+
+    validateNumber(mid, 0, 30, "Mid");
+    validateNumber(final, 0, 50, "Final");
+    validateNumber(activites, 0, 20, "Activities");
+    
 
     // 3️⃣ قراءة URI من Environment Variable
     const mongoUri = process.env.MONGODB_URI;
