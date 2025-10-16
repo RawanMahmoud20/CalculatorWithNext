@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Divider, Typography, Button, Card, FloatButton, Slider, Flex, Modal } from "antd";
+import { Divider, Typography, Button, Card, FloatButton, Slider, Flex } from "antd";
 import { PlusCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { RootState } from "../redux/store";
@@ -48,18 +48,10 @@ const Results: React.FC = () => {
       try {
         await axios.delete(`/api/marks/delete/${id}`);
         dispatch(studentAction.removeStudent(id));
-        Modal.success({
-          title: 'Success',
-          content: 'Student deleted successfully',
-          okText: 'OK',
-        });
-        } catch (error: any) {
+        alert("Student deleted successfully");
+      } catch (error: any) {
         console.error(error);
-        Modal.error({
-          title: 'Error',
-          content: 'Failed to delete student',
-          okText: 'OK',
-        });
+        alert("Failed to delete student");
       }
     }
   };

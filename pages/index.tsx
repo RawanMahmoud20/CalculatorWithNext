@@ -74,39 +74,26 @@ router.push("/result");
 
 }catch (error: any) {
     console.error("Error:", error.response?.data?.message || error.message);
-    Modal.error({
-      title: 'Error',
-      content: error.response?.data?.message || error.message || 'An error occurred while saving the data.',
-      okText: 'OK',
-    })
-    
+    alert(error.response?.data?.message || "Something went wrong!");
+
 }  
 }
 const [loading, setLoading] = React.useState<boolean>(false);
-let submitHandeller = (event:React.FormEvent)=>{
+let submitHandeller = async (event:React.FormEvent)=>{
  event.preventDefault();
 if (cheackData()){
-  saveData();
+  await saveData();
     setLoading(true);
+    Modal.success({
+      content: 'Student added successfully!',
+      okText: 'OK',
+    });
   setTimeout(() => {
-      Modal.success({
-        title: 'saved successfully',
-        content: 'You can see the result now',
-        okText: 'Go to Result',
-        onOk: () => {
-          router.push("/result");
-        },
-      })
       setLoading(false);
     }, 2000);
 }else {
-Modal.warning({
-    title: 'Warning',
-    content: 'Please fill all fields correctly!',
-    okText: 'OK',
-  });  
-}
-  
+    alert("Please fill all fields correctly!");
+  }
 }
 
   return (

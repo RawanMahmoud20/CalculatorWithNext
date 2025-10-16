@@ -56,22 +56,21 @@ export default async function handler(
     validateNumber(activites, 0, 20, "Activities");
     
 
-    // 3️⃣ قراءة URI من Environment Variable
+    //  قراءة URI من Environment Variable
     const mongoUri = process.env.MONGODB_URI;
     if (!mongoUri) throw new Error("MongoDB URI is not defined in environment variables");
 
     console.log("Connecting to MongoDB...");
 
-    // 4️⃣ الاتصال بـ MongoDB
+    //  الاتصال بـ MongoDB
 const client = await MongoClient.connect(process.env.MONGODB_URI!);
     const db = client.db("MarksDB");
     const marksCollection = db.collection("marks");
 
-    // 5️⃣ إدخال البيانات
-    const result: InsertOneResult<any> = 
-    await marksCollection.insertOne(req.body);
+    //  إدخال البيانات
+    const result: InsertOneResult<any> = await marksCollection.insertOne(req.body);
 
-    // 6️⃣ إغلاق الاتصال
+    //  إغلاق الاتصال
     await client.close();
 
     console.log("Inserted successfully:", result.insertedId);
@@ -82,7 +81,7 @@ const client = await MongoClient.connect(process.env.MONGODB_URI!);
       data: req.body,
     });
   } catch (error: any) {
-    // 7️⃣ طباعة الأخطاء لتسهيل التشخيص
+    //  طباعة الأخطاء لتسهيل التشخيص
     console.error("API ERROR:", error.message);
 
     // إرسال خطأ 500 مع رسالة واضحة
