@@ -100,8 +100,13 @@ if (cheackData()){
       setLoading(false);
     }, 2000);
 }else {
-    alert("Please fill all fields correctly!");
-  }
+Modal.warning({
+    title: 'Warning',
+    content: 'Please fill all fields correctly!',
+    okText: 'OK',
+  });  
+}
+  
 }
 
   return (
