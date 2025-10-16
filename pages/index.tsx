@@ -6,9 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { RootState } from "../redux/store";
 import { studentAction } from "../redux/slices/studentsSlice";
-import { Button } from "antd";
-import { message } from "antd";
-
+import { Button, Modal } from "antd";
 const Home: React.FC = () => {
  
  let nameRef = useRef<HTMLInputElement>(null);
@@ -75,9 +73,13 @@ router.push("/result");
 
 
 }catch (error: any) {
-  console.error("❌ API Error:", error.response?.data?.message || error.message);
-  message.error(error.response?.data?.message || "Something went wrong!");
-
+    console.error("Error:", error.response?.data?.message || error.message);
+    Modal.error({
+      title: 'Error',
+      content: error.response?.data?.message || error.message || 'An error occurred while saving the data.',
+      okText: 'OK',
+    })
+    
 }  
 }
 const [loading, setLoading] = React.useState<boolean>(false);
@@ -87,7 +89,14 @@ if (cheackData()){
   saveData();
     setLoading(true);
   setTimeout(() => {
-    message.success("تم الحفظ بنجاح ✅");
+      Modal.success({
+        title: 'saved successfully',
+        content: 'You can see the result now',
+        okText: 'Go to Result',
+        onOk: () => {
+          router.push("/result");
+        },
+      })
       setLoading(false);
     }, 2000);
 }else {
