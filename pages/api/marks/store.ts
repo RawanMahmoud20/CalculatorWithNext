@@ -14,7 +14,7 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   try {
-    // 1️⃣ تحقق من نوع الطلب
+    //تحقق من نوع الطلب
     if (req.method !== "POST") {
       return res.status(405).json({ status: false, message: "Method not allowed" });
     }
@@ -23,11 +23,11 @@ export default async function handler(
 
     const { name, mid, final, activites } = req.body;
 
-    // 2️⃣ تحقق من البيانات
+    //  تحقق من الاسم
     if (!name || typeof name !== "string" || name.trim() === "") {
       throw new Error("Name is required and must be a non-empty string");
     }
-    // ✅ التحقق من أن الاسم يحتوي فقط على حروف (عربية أو إنجليزية) ومسافات
+    // التحقق من أن الاسم يحتوي فقط على حروف (عربية أو إنجليزية) ومسافات
     const nameRegex = /^[A-Za-z\u0600-\u06FF\s]+$/;
     if (!nameRegex.test(name)) {
       throw new Error("Name must contain only letters (no numbers or symbols)");
@@ -68,7 +68,8 @@ const client = await MongoClient.connect(process.env.MONGODB_URI!);
     const marksCollection = db.collection("marks");
 
     // 5️⃣ إدخال البيانات
-    const result: InsertOneResult<any> = await marksCollection.insertOne(req.body);
+    const result: InsertOneResult<any> = 
+    await marksCollection.insertOne(req.body);
 
     // 6️⃣ إغلاق الاتصال
     await client.close();

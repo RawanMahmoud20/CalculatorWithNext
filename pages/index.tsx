@@ -7,6 +7,8 @@ import axios from "axios";
 import { RootState } from "../redux/store";
 import { studentAction } from "../redux/slices/studentsSlice";
 import { Button } from "antd";
+import { message } from "antd";
+
 const Home: React.FC = () => {
  
  let nameRef = useRef<HTMLInputElement>(null);
@@ -73,8 +75,8 @@ router.push("/result");
 
 
 }catch (error: any) {
-    console.error("Error:", error.response?.data?.message || error.message);
-    alert(error.response?.data?.message || "Something went wrong!");
+  console.error("❌ API Error:", error.response?.data?.message || error.message);
+  message.error(error.response?.data?.message || "Something went wrong!");
 
 }  
 }
@@ -85,7 +87,7 @@ if (cheackData()){
   saveData();
     setLoading(true);
   setTimeout(() => {
-      alert("تم الحفظ!");
+    message.success("تم الحفظ بنجاح ✅");
       setLoading(false);
     }, 2000);
 }else {
