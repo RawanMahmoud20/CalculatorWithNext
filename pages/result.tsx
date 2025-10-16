@@ -146,6 +146,12 @@ const Results: React.FC = () => {
               into account when conducting the final inspection...
             </Paragraph>
           )}
+
+          {student.average >= 30 && (
+          <Paragraph style={{ color: "green", fontWeight: "bold", marginTop: "16px" }}>
+            Excellent! Your grades are above average. Keep up the great work! 🎉
+          </Paragraph>
+        )}
           {/* أزرار التحكم */}
          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "16px" }}>
             <Button
