@@ -1,6 +1,5 @@
 import Head from "next/head";
 import React, { useEffect, useRef } from "react";
-// import style from  "../styles/style.css"; 
 import { useDispatch, useSelector} from "react-redux";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -17,6 +16,13 @@ const Home: React.FC = () => {
 
  let dispatch=useDispatch();
  const router= useRouter();
+const [modal, setModal] = React.useState
+<{
+  open: boolean;
+  type: 'success' | 'error' | 'warning';
+  content: string;
+}>
+({ open: false, type: 'success', content: '' });
 
  
 let cheackData = () => {
@@ -68,7 +74,8 @@ if (!exists) {
   dispatch(studentAction.addStudent(student));
 }
 clear();
-router.push("/result");
+
+// router.push("/result");
 // const exists = students.some((s) => s.id === student.id);
 
 
@@ -79,21 +86,36 @@ router.push("/result");
 }  
 }
 const [loading, setLoading] = React.useState<boolean>(false);
+
 let submitHandeller = async (event:React.FormEvent)=>{
  event.preventDefault();
-if (cheackData()){
-  await saveData();
+if (!cheackData()){
+  setModal({
+    open: true,
+    type: 'warning', 
+    content: 'Please fill all fields correctly!'
+  });
+  return;
+}
     setLoading(true);
-    Modal.success({
-      content: 'Student added successfully!',
-      okText: 'OK',
-    });
-  setTimeout(() => {
+
+    try{
+      await saveData();
+    setModal({
+    open: true,
+    type: 'success', 
+    content: 'Student added successfully!'
+  });
+   router.push("/result");
+  }catch (error: any){
+      setModal({
+        open: true,
+        type: 'error',
+        content: error.response?.data?.message || 'Failed to add student!',
+      });
+    }finally{
       setLoading(false);
-    }, 2000);
-}else {
-    alert("Please fill all fields correctly!");
-  }
+    }
 }
 
   return (
@@ -178,17 +200,26 @@ if (cheackData()){
     <div className="row mt-4">
       <div className="col-12 text-center">
         <Button 
-        iconPosition="end"
+        htmlType="submit"
+        onClick={submitHandeller}
         type="primary"
-
-        variant="outlined"
-        size="large"
          id="saveBtn" 
          className="save-btn"
-         onClick={submitHandeller}
          loading={loading}
          >SAVE
          </Button>
+        {modal.open &&(
+          <Modal
+          open={modal.open}
+          onOk={() => setModal({ ...modal, open: false })}
+          onCancel={() => setModal({ ...modal, open: false })}
+          okText="OK"
+          title={modal.type === 'success' ? 'Success' : modal.type === 'warning' ? 'Warning' : 'Error'}
+          >
+            <p>{modal.content}</p>
+          </Modal>
+        )}
+
       </div>
     </div>
   </form>

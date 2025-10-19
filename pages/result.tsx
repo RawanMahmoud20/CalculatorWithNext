@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Divider, Typography, Button, Card, FloatButton, Slider, Flex } from "antd";
+import { Divider, Typography, Button, Card, FloatButton, Slider, Flex, Modal } from "antd";
 import { PlusCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { RootState } from "../redux/store";
@@ -11,7 +11,39 @@ const Results: React.FC = () => {
   const students = useSelector((state: RootState) => state.students.data);
   const dispatch = useDispatch();
   const router = useRouter();
+const [open,setOpen]=useState(false);
+const [modalText, setModalText] = useState('ARE YOU SURE YOU WANT TO DELETE THIS STUDENT?');
+const[confirmLoading,setConfirmLoading]=useState(false);
+const [deleteId, setDeleteId] = useState<number | null>(null);
 
+  const handleDelete = async (id: number) => {
+    setModalText("Are you sure you want to delete this student?");
+   setDeleteId(id);
+  setOpen(true);
+  };
+  const handleOk = async () => {
+  if (deleteId === null) return;
+
+  setConfirmLoading(true);
+  try {
+    await axios.delete(`/api/marks/delete/${deleteId}`);
+    dispatch(studentAction.removeStudent(deleteId));
+    setModalText('Student deleted successfully');
+  } catch (error) {
+    console.error(error);
+    setModalText('Failed to delete student');
+  } finally {
+    setTimeout(() => {
+      setConfirmLoading(false);
+      setOpen(false);
+      setDeleteId(null); // إعادة تعيين ID
+    }, 2000);
+  }
+};
+const handleCancel = () => {
+  setOpen(false);
+  setDeleteId(null);
+};
   useEffect(() => {
     const fetchStudent = async () => {
       try {
@@ -42,26 +74,11 @@ const Results: React.FC = () => {
   const handleNew = () => {
     router.push(`/`);
   };
-
-  const handleDelete = async (id: number) => {
-    if (confirm("ARE YOU SURE YOU WANT TO DELETE THIS STUDENT?")) {
-      try {
-        await axios.delete(`/api/marks/delete/${id}`);
-        dispatch(studentAction.removeStudent(id));
-        alert("Student deleted successfully");
-      } catch (error: any) {
-        console.error(error);
-        alert("Failed to delete student");
-      }
-    }
-  };
-
   const { Title, Text, Paragraph } = Typography;
   const [text, setText] = useState(
     "Can you describe the reason for your low score so that I can take this into account when conducting the final inspection..."
   );
   const [edit, setEdit] = useState(false);
-
 
 
 
@@ -153,6 +170,7 @@ const Results: React.FC = () => {
           </Paragraph>
         )}
           {/* أزرار التحكم */}
+        
          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "16px" }}>
             <Button
               type="primary"
@@ -167,7 +185,16 @@ const Results: React.FC = () => {
             >
               Delete
             </Button>
-        </div>
+             <Modal
+              title="Title"
+              open={open}
+              onOk={handleOk}
+              confirmLoading={confirmLoading}
+              onCancel={handleCancel}
+            >
+              <p>{modalText}</p>
+            </Modal>
+          </div>
       </Flex>
       </Card>
       <FloatButton.Group shape="square" style={{ right: 24 }}>

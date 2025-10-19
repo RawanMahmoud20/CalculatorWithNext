@@ -1,4 +1,7 @@
-// import '../styles/style.css';
+import '../styles/style.css';
+import 'antd/dist/reset.css';
+import '../styles/globals.css';
+import 'bootstrap/dist/css/bootstrap.rtl.min.css';
 import type { AppProps } from 'next/app';
 import { Provider } from "react-redux";
 import store from '../redux/store';
