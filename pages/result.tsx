@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Divider, Typography, Button, Card, FloatButton, Slider, Flex, Modal } from "antd";
+import { Divider, Typography, Button, Card, FloatButton, Slider, Flex, Modal, message } from "antd";
 import { PlusCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { RootState } from "../redux/store";
@@ -15,16 +15,23 @@ const [open,setOpen]=useState(false);
 const [modalText, setModalText] = useState('ARE YOU SURE YOU WANT TO DELETE THIS STUDENT?');
 const[confirmLoading,setConfirmLoading]=useState(false);
 const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async (id: number) => {
     setModalText("Are you sure you want to delete this student?");
-   setDeleteId(id);
+    setDeleteId(id);
   setOpen(true);
   };
   const handleOk = async () => {
   if (deleteId === null) return;
 
-  setConfirmLoading(true);
+  // setConfirmLoading(true);
+    messageApi.open({
+      type: 'loading',
+      content: 'Action in progress..',
+      duration: 0,
+    });
+    setTimeout(messageApi.destroy, 2500);
   try {
     await axios.delete(`/api/marks/delete/${deleteId}`);
     dispatch(studentAction.removeStudent(deleteId));
@@ -103,15 +110,15 @@ const handleCancel = () => {
         <Title level={3}>
           The Name: <Text strong>{student.name}</Text>
         </Title>
-      <Flex
-          justify="space-around"
-          align="middle"
-          style={{
-            width: "100%",
-            textAlign: "center",
-            marginTop: "40px",
-          }}
-        >
+        <Flex
+            justify="space-around"
+            align="middle"
+            style={{
+              width: "100%",
+              textAlign: "center",
+              marginTop: "40px",
+            }}
+          >
           <div>
             <Title level={5}>
               Mid: <Text mark>{student.mid}</Text>
@@ -172,6 +179,7 @@ const handleCancel = () => {
           {/* أزرار التحكم */}
         
          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginTop: "16px" }}>
+            {contextHolder}
             <Button
               type="primary"
               danger
