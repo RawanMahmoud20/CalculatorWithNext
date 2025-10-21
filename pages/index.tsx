@@ -1,19 +1,18 @@
 import Head from "next/head";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector} from "react-redux";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { RootState } from "../redux/store";
 import { studentAction } from "../redux/slices/studentsSlice";
-import { Button, Modal } from "antd";
+import { Button, message, Modal , Alert} from "antd";
 const Home: React.FC = () => {
- 
  let nameRef = useRef<HTMLInputElement>(null);
  let midRef = useRef<HTMLInputElement>(null);
  let finalRef = useRef<HTMLInputElement>(null);
  let activitedRef = useRef<HTMLInputElement>(null);
  const students = useSelector((state: RootState) => state.students.data);
-
+let [errorMessage, setErrorMessage] = useState<string>("");
  let dispatch=useDispatch();
  const router= useRouter();
 const [modal, setModal] = React.useState
@@ -21,11 +20,11 @@ const [modal, setModal] = React.useState
   open: boolean;
   type: 'success' | 'error' | 'warning';
   content: string;
-}>
-({ open: false, type: 'success', content: '' });
+}>({ open: false, type: 'success', content: '' });
 
- 
-let cheackData = () => {
+const [messageApi,contextHolder]= message.useMessage();
+
+let checkData = () => {
   return (
     nameRef.current?.value !== "" &&
     midRef.current?.value !== "" &&
@@ -49,6 +48,7 @@ const final = Number(finalRef.current?.value) || 0;
 const activites = Number(activitedRef.current?.value) || 0;
 const average = (mid + final + activites) / 3;
 
+
 const student = {
   id,
   name,
@@ -70,54 +70,61 @@ console.log(response.data); // رسالة النجاح
  const studentFromDb = response.data.data || response.data.student;
  // نتأكد أنه ما انضاف مسبقًا
   const exists = students.some((s) => s.id === studentFromDb?._id);
-if (!exists) {
-  dispatch(studentAction.addStudent(student));
-}
-clear();
-
+  if (!exists) dispatch(studentAction.addStudent(student));
+  clear();
+  setErrorMessage("");
+  return true;
 // router.push("/result");
 // const exists = students.some((s) => s.id === student.id);
 
-
 }catch (error: any) {
     console.error("Error:", error.response?.data?.message || error.message);
-    alert(error.response?.data?.message || "Something went wrong!");
-
+    setErrorMessage(error.response?.data?.message || "Something went wrong!");
+    setTimeout(() => setErrorMessage(""), 4000);
+    return false; 
 }  
 }
 const [loading, setLoading] = React.useState<boolean>(false);
+const submitHandeller = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-let submitHandeller = async (event:React.FormEvent)=>{
- event.preventDefault();
-if (!cheackData()){
-  setModal({
-    open: true,
-    type: 'warning', 
-    content: 'Please fill all fields correctly!'
-  });
-  return;
-}
-    setLoading(true);
-
-    try{
-      await saveData();
-    setModal({
-    open: true,
-    type: 'success', 
-    content: 'Student added successfully!'
-  });
-   router.push("/result");
-  }catch (error: any){
+    // التحقق المحلي أولًا
+    if (!checkData()) {
       setModal({
         open: true,
-        type: 'error',
-        content: error.response?.data?.message || 'Failed to add student!',
+        type: "warning",
+        content:
+          "Please fill all fields correctly! (Name must contain only letters)",
       });
-    }finally{
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const success = await saveData();
+      if (success) {
+        // setModal({
+        //   open: true,
+        //   type: "success",
+        //   content: "Student added successfully!",
+        // });
+       messageApi.open({
+          type: 'success',
+          content: 'Student added successfully!',
+        });
+        // الانتقال بعد2  ثانية
+        setTimeout(() => router.push("/result"), 2000);
+      }
+    } catch (error: any) {
+      setModal({
+        open: true,
+        type: "error",
+        content: error.message || "Failed to add student!",
+      });
+    } finally {
       setLoading(false);
     }
-}
-
+  };
   return (
     <div>
   <Head>
@@ -132,6 +139,7 @@ if (!cheackData()){
   </Head> 
       <main>
   <div className="container">
+    
   {/* <!-- Header --> */}
   <div className="row align-items-center page-header">
     <div className="col-md-8">
@@ -156,6 +164,7 @@ if (!cheackData()){
          className="form-control form-input" 
          placeholder="Enter Name"
          ref={nameRef}
+         onChange={()=>setErrorMessage("")}
          />
       </div>
 
@@ -167,7 +176,7 @@ if (!cheackData()){
           placeholder="Enter Mark"
            min="0"
           ref={midRef}
-
+          onChange={()=>setErrorMessage("")}
            />
       </div>
 
@@ -179,7 +188,7 @@ if (!cheackData()){
         placeholder="Enter Mark"
         min="0"
         ref={finalRef}
-
+        onChange={()=>setErrorMessage("")}
          />
       </div>
     </div>
@@ -193,12 +202,25 @@ if (!cheackData()){
           placeholder="Enter Mark"
            min="0"
           ref={activitedRef}
+          onChange={()=>setErrorMessage("")}
+
            />
       </div>
     </div>
 
     <div className="row mt-4">
       <div className="col-12 text-center">
+        {contextHolder}
+        {errorMessage && (
+            <Alert
+              type="error"
+              message={errorMessage}
+              showIcon
+              banner={true}
+             style={{ marginBottom: "20px" }}
+            />
+          )}
+
         <Button 
         htmlType="submit"
         onClick={submitHandeller}
@@ -208,6 +230,7 @@ if (!cheackData()){
          loading={loading}
          >SAVE
          </Button>
+         
         {modal.open &&(
           <Modal
           open={modal.open}
